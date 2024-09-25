@@ -18,12 +18,17 @@ export default function Cell({ content: initialContent, onChange }: Props) {
       setEditing(false);
     }
     if (event.key === "Enter") {
-      onchange(content);
+      onChange(content);
     }
   };
   useEffect(() => {
     setContent(initialContent);
   }, [initialContent]);
+
+  const evaluateFormula = (exp: string) => {
+    const sanitized = exp.slice(1).replace(/[^\=\+\-\*%/0-9]/g, "");
+    return eval(sanitized);
+  };
 
   return (
     <td onClick={() => setEditing(!editing)}>
@@ -37,7 +42,7 @@ export default function Cell({ content: initialContent, onChange }: Props) {
       ) : content.toString().startsWith("=") ? (
         evaluateFormula(content.toString())
       ) : (
-        initialContent
+        content
       )}
     </td>
   );
